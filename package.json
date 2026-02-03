@@ -1,0 +1,60 @@
+{
+  "name": "create-innovator",
+  "version": "0.1.0",
+  "description": "Create Innovator App",
+  "type": "module",
+  "bin": {
+    "create-innovator": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/cli.ts",
+    "format": "prettier . --write",
+    "lint": "eslint .",
+    "prepare": "husky",
+    "release": "release-it"
+  },
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10.28.2"
+  },
+  "dependencies": {
+    "citty": "0.2.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "20.4.1",
+    "@commitlint/config-conventional": "20.4.1",
+    "@eslint/js": "9.39.2",
+    "@release-it/conventional-changelog": "10.0.5",
+    "@types/node": "^24",
+    "commitizen": "4.3.1",
+    "cz-conventional-changelog": "3.3.0",
+    "eslint": "9.39.2",
+    "globals": "17.3.0",
+    "husky": "9.1.7",
+    "lint-staged": "16.2.7",
+    "prettier": "3.8.1",
+    "release-it": "19.2.4",
+    "release-it-pnpm": "4.6.6",
+    "tsup": "8.5.1",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.54.0"
+  },
+  "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "printWidth": 120
+  }
+}
