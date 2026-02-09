@@ -4,4 +4,5 @@
  */
 export default {
   '*.{js,json,md,ts}': ['eslint --fix', 'prettier --write'],
+  '*.ts': ['vitest related --run --coverage.enabled=false --passWithNoTests'],
 };
