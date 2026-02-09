@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { defineCommand, runMain } from 'citty';
+import { intro, text, isCancel, outro } from '@clack/prompts';
 
 const pkgUrl = new URL('../package.json', import.meta.url);
 const pkg = JSON.parse(readFileSync(pkgUrl, 'utf8')) as { version?: string };
@@ -13,14 +14,28 @@ const main = defineCommand({
   },
   args: {
     name: {
-      type: 'string',
-      required: false,
+      alias: ['n'],
       description: 'Project name',
+      required: false,
+      type: 'string',
     },
   },
-  run({ args }) {
-    const projectName = args.name ?? 'my-innovator-app';
-    console.log(`Scaffolding ${projectName}...`);
+  async run({ args }) {
+    intro(`Create Innovator App (v${version})`);
+
+    const projectName =
+      args.name ??
+      (await text({
+        defaultValue: 'my-innovator-app',
+        message: 'Project name',
+        placeholder: 'my-innovator-app',
+      }));
+
+    if (isCancel(projectName)) {
+      process.exit(0);
+    }
+
+    outro(`Scaffolding ${projectName}...`);
   },
 });
 

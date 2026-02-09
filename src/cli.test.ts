@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 let capturedCommand: {
   meta: Record<string, unknown>;
   args: Record<string, unknown>;
-  run: (ctx: { args: Record<string, unknown> }) => void;
+  run: (ctx: { args: Record<string, unknown> }) => Promise<void>;
 };
 
 vi.mock('citty', () => ({
@@ -18,11 +18,23 @@ vi.mock('node:fs', () => ({
   readFileSync: vi.fn(() => JSON.stringify({ version: '1.2.3' })),
 }));
 
+vi.mock('@clack/prompts', () => ({
+  intro: vi.fn(),
+  text: vi.fn(),
+  outro: vi.fn(),
+  isCancel: vi.fn(() => false),
+}));
+
 describe('cli', () => {
   beforeEach(async () => {
     vi.resetModules();
     const { runMain } = await import('citty');
     (runMain as Mock).mockClear();
+    const { intro, text, outro, isCancel } = await import('@clack/prompts');
+    (intro as Mock).mockClear();
+    (text as Mock).mockClear();
+    (outro as Mock).mockClear();
+    (isCancel as Mock).mockReset().mockReturnValue(false);
     await import('./cli.js');
   });
 
@@ -34,12 +46,17 @@ describe('cli', () => {
     });
   });
 
+  it('should expose version from package.json for --version flag', () => {
+    expect(capturedCommand.meta.version).toBe('1.2.3');
+  });
+
   it('should define a name argument as optional string', () => {
     expect(capturedCommand.args).toEqual({
       name: {
-        type: 'string',
-        required: false,
+        alias: ['n'],
         description: 'Project name',
+        required: false,
+        type: 'string',
       },
     });
   });
@@ -49,17 +66,41 @@ describe('cli', () => {
     expect(runMain).toHaveBeenCalledWith(capturedCommand);
   });
 
-  it('should use provided project name', () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    capturedCommand.run({ args: { name: 'cool-project' } });
-    expect(logSpy).toHaveBeenCalledWith('Scaffolding cool-project...');
-    logSpy.mockRestore();
+  it('should call intro', async () => {
+    const { intro } = await import('@clack/prompts');
+    await capturedCommand.run({ args: { name: 'test' } });
+    expect(intro).toHaveBeenCalledWith('Create Innovator App (v1.2.3)');
   });
 
-  it('should default to my-innovator-app when no name given', () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    capturedCommand.run({ args: {} });
-    expect(logSpy).toHaveBeenCalledWith('Scaffolding my-innovator-app...');
-    logSpy.mockRestore();
+  it('should use provided project name without prompting', async () => {
+    const { text, outro } = await import('@clack/prompts');
+    await capturedCommand.run({ args: { name: 'cool-project' } });
+    expect(text).not.toHaveBeenCalled();
+    expect(outro).toHaveBeenCalledWith('Scaffolding cool-project...');
+  });
+
+  it('should prompt for project name when no name given', async () => {
+    const { text, outro } = await import('@clack/prompts');
+    (text as Mock).mockResolvedValue('my-innovator-app');
+    await capturedCommand.run({ args: {} });
+    expect(text).toHaveBeenCalledWith({
+      message: 'Project name',
+      defaultValue: 'my-innovator-app',
+      placeholder: 'my-innovator-app',
+    });
+    expect(outro).toHaveBeenCalledWith('Scaffolding my-innovator-app...');
+  });
+
+  it('should exit on cancel', async () => {
+    const { text, isCancel } = await import('@clack/prompts');
+    const cancelSymbol = Symbol('cancel');
+    (text as Mock).mockResolvedValue(cancelSymbol);
+    (isCancel as Mock).mockReturnValue(true);
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
+      throw new Error('process.exit');
+    });
+    await expect(capturedCommand.run({ args: {} })).rejects.toThrow('process.exit');
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    exitSpy.mockRestore();
   });
 });

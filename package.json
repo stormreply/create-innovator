@@ -34,6 +34,7 @@
     "pnpm": ">=10.29.2"
   },
   "dependencies": {
+    "@clack/prompts": "1.0.0",
     "citty": "0.2.0"
   },
   "devDependencies": {
