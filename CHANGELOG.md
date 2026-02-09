@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.1.2](https://github.com/stormreply/create-innovator/compare/0.1.1...0.1.2) (2026-02-09)
+
 ## 0.1.0 (2026-02-09)
 
 ### Features
