@@ -3,7 +3,7 @@ import { defineCommand, runMain } from 'citty';
 import logo from 'cli-ascii-logo';
 import { intro, text, isCancel, outro, log } from '@clack/prompts';
 import { ensureGitHubAuth } from './auth/github.js';
-import { ensureGhCli, cloneTemplate } from './scaffold/clone.js';
+import { ensureGhCli, cloneTemplate, selectVersion } from './scaffold/clone.js';
 import { readManifest, collectValues, applyReplacements } from './scaffold/template.js';
 
 const pkgUrl = new URL('../package.json', import.meta.url);
@@ -22,6 +22,13 @@ const main = defineCommand({
       description: 'Project name',
       required: false,
       type: 'string',
+    },
+    experimental: {
+      alias: ['e'],
+      description: 'Include experimental (pre-release) versions',
+      required: false,
+      type: 'boolean',
+      default: false,
     },
   },
   async run({ args }) {
@@ -42,9 +49,10 @@ const main = defineCommand({
     }
 
     try {
-      await ensureGitHubAuth();
+      const token = await ensureGitHubAuth();
       await ensureGhCli();
-      await cloneTemplate(projectName);
+      const tag = await selectVersion(token, args.experimental);
+      await cloneTemplate(projectName, tag);
       const config = await readManifest(projectName);
       const values = await collectValues(config.placeholders, { PROJECT_NAME: projectName });
       await applyReplacements(projectName, config, values);

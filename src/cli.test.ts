@@ -27,11 +27,12 @@ vi.mock('@clack/prompts', () => ({
 }));
 
 vi.mock('./auth/github.js', () => ({
-  ensureGitHubAuth: vi.fn().mockResolvedValue(undefined),
+  ensureGitHubAuth: vi.fn().mockResolvedValue('ghp_mock_token'),
 }));
 
 vi.mock('./scaffold/clone.js', () => ({
   ensureGhCli: vi.fn().mockResolvedValue(undefined),
+  selectVersion: vi.fn().mockResolvedValue('release-v1.0.0'),
   cloneTemplate: vi.fn().mockResolvedValue(undefined),
 }));
 
@@ -66,13 +67,20 @@ describe('cli', () => {
     expect(capturedCommand.meta.version).toBe('1.2.3');
   });
 
-  it('should define a name argument as optional string', () => {
+  it('should define name and experimental arguments', () => {
     expect(capturedCommand.args).toEqual({
       name: {
         alias: ['n'],
         description: 'Project name',
         required: false,
         type: 'string',
+      },
+      experimental: {
+        alias: ['e'],
+        description: 'Include experimental (pre-release) versions',
+        required: false,
+        type: 'boolean',
+        default: false,
       },
     });
   });

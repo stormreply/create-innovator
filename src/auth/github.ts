@@ -49,7 +49,7 @@ export async function checkRegistryAccess(token: string): Promise<boolean> {
   }
 }
 
-export async function ensureGitHubAuth(): Promise<void> {
+export async function ensureGitHubAuth(): Promise<string> {
   const s = p.spinner();
 
   s.start('Reading token from ~/.npmrc');
@@ -97,4 +97,6 @@ export async function ensureGitHubAuth(): Promise<void> {
   s.start('Saving token to ~/.npmrc');
   await saveToken(token);
   s.stop('Token saved to ~/.npmrc');
+
+  return token;
 }

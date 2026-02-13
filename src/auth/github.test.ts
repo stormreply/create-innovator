@@ -116,7 +116,8 @@ describe('github', () => {
       mockListPackages.mockResolvedValue({ data: [] });
 
       const { ensureGitHubAuth } = await import('./github.js');
-      await ensureGitHubAuth();
+      const token = await ensureGitHubAuth();
+      expect(token).toBe('ghp_stored');
       expect(saveToken).toHaveBeenCalledWith('ghp_stored');
     });
 
@@ -134,7 +135,8 @@ describe('github', () => {
       mockListPackages.mockResolvedValue({ data: [] });
 
       const { ensureGitHubAuth } = await import('./github.js');
-      await ensureGitHubAuth();
+      const token = await ensureGitHubAuth();
+      expect(token).toBe('ghp_prompted');
       expect(promptForToken).toHaveBeenCalled();
       expect(saveToken).toHaveBeenCalledWith('ghp_prompted');
     });
