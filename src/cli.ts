@@ -1,6 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { defineCommand, runMain } from 'citty';
-import { intro, text, isCancel, outro } from '@clack/prompts';
+import logo from 'cli-ascii-logo';
+import { intro, text, isCancel, outro, log } from '@clack/prompts';
+import { ensureGitHubAuth } from './auth/github.js';
+import { ensureGhCli, cloneTemplate } from './scaffold/clone.js';
+import { readManifest, collectValues, applyReplacements } from './scaffold/template.js';
 
 const pkgUrl = new URL('../package.json', import.meta.url);
 const pkg = JSON.parse(readFileSync(pkgUrl, 'utf8')) as { version?: string };
@@ -21,6 +25,8 @@ const main = defineCommand({
     },
   },
   async run({ args }) {
+    console.log(logo.createLogo('Innovator', 'aurora'));
+
     intro(`Create Innovator App (v${version})`);
 
     const projectName =
@@ -35,7 +41,19 @@ const main = defineCommand({
       process.exit(0);
     }
 
-    outro(`Scaffolding ${projectName}...`);
+    try {
+      await ensureGitHubAuth();
+      await ensureGhCli();
+      await cloneTemplate(projectName);
+      const config = await readManifest(projectName);
+      const values = await collectValues(config.placeholders, { PROJECT_NAME: projectName });
+      await applyReplacements(projectName, config, values);
+    } catch (error) {
+      log.error(error instanceof Error ? error.message : 'Scaffolding failed.');
+      process.exit(1);
+    }
+
+    outro(`Project ${projectName} is ready!`);
   },
 });
 

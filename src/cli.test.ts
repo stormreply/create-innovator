@@ -22,7 +22,23 @@ vi.mock('@clack/prompts', () => ({
   intro: vi.fn(),
   text: vi.fn(),
   outro: vi.fn(),
+  log: { error: vi.fn() },
   isCancel: vi.fn(() => false),
+}));
+
+vi.mock('./auth/github.js', () => ({
+  ensureGitHubAuth: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('./scaffold/clone.js', () => ({
+  ensureGhCli: vi.fn().mockResolvedValue(undefined),
+  cloneTemplate: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('./scaffold/template.js', () => ({
+  readManifest: vi.fn().mockResolvedValue({ placeholders: [], files: [], exclude: [] }),
+  collectValues: vi.fn().mockResolvedValue({}),
+  applyReplacements: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('cli', () => {
@@ -76,7 +92,7 @@ describe('cli', () => {
     const { text, outro } = await import('@clack/prompts');
     await capturedCommand.run({ args: { name: 'cool-project' } });
     expect(text).not.toHaveBeenCalled();
-    expect(outro).toHaveBeenCalledWith('Scaffolding cool-project...');
+    expect(outro).toHaveBeenCalledWith('Project cool-project is ready!');
   });
 
   it('should prompt for project name when no name given', async () => {
@@ -88,7 +104,7 @@ describe('cli', () => {
       defaultValue: 'my-innovator-app',
       placeholder: 'my-innovator-app',
     });
-    expect(outro).toHaveBeenCalledWith('Scaffolding my-innovator-app...');
+    expect(outro).toHaveBeenCalledWith('Project my-innovator-app is ready!');
   });
 
   it('should exit on cancel', async () => {
