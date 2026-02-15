@@ -61,7 +61,7 @@ const main = defineCommand({
       process.exit(1);
     }
 
-    await setupProject(projectName, projectName);
+    await setupProject(projectName);
 
     outro(`Project ${projectName} is ready!`);
   },

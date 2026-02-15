@@ -35,7 +35,7 @@ describe('setupProject', () => {
   it('should skip corepack enable when pnpm is already available', async () => {
     mockExecFile.mockReturnValue(undefined);
     const { setupProject } = await import('./setup.js');
-    await setupProject('my-project', 'my-project');
+    await setupProject('my-project');
     expect(mockExecFile).toHaveBeenCalledWith('pnpm', ['--version'], expect.any(Function));
     expect(mockExecFile).not.toHaveBeenCalledWith('corepack', expect.anything(), expect.anything());
     expect(mockExecFile).toHaveBeenCalledWith('pnpm', ['install'], { cwd: 'my-project' });
@@ -54,7 +54,7 @@ describe('setupProject', () => {
       return undefined;
     });
     const { setupProject } = await import('./setup.js');
-    await setupProject('my-project', 'my-project');
+    await setupProject('my-project');
     expect(mockExecFile).toHaveBeenCalledWith('corepack', ['enable'], expect.any(Function));
     expect(mockExecFile).toHaveBeenCalledWith('pnpm', ['install'], { cwd: 'my-project' });
   });
@@ -66,7 +66,7 @@ describe('setupProject', () => {
       return undefined;
     });
     const { setupProject } = await import('./setup.js');
-    await setupProject('my-project', 'my-project');
+    await setupProject('my-project');
     expect(mockLogWarn).toHaveBeenCalled();
     expect(mockLogInfo).toHaveBeenCalled();
   });
@@ -77,7 +77,7 @@ describe('setupProject', () => {
       return undefined;
     });
     const { setupProject } = await import('./setup.js');
-    await setupProject('my-project', 'my-project');
+    await setupProject('my-project');
     expect(mockLogWarn).toHaveBeenCalled();
     expect(mockLogInfo).toHaveBeenCalled();
   });
@@ -88,7 +88,7 @@ describe('setupProject', () => {
       return undefined;
     });
     const { setupProject } = await import('./setup.js');
-    await setupProject('my-project', 'my-project');
+    await setupProject('my-project');
     expect(mockLogWarn).toHaveBeenCalled();
     expect(mockLogInfo).toHaveBeenCalled();
   });
