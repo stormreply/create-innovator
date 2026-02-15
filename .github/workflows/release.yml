@@ -43,5 +43,5 @@ jobs:
       - run: pnpm build
       - run: pnpm release --ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           HUSKY: 0
