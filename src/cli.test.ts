@@ -122,7 +122,7 @@ describe('cli', () => {
     const { setupProject } = await import('./scaffold/setup.js');
     (setupProject as Mock).mockClear();
     await capturedCommand.run({ args: { name: 'cool-project' } });
-    expect(setupProject).toHaveBeenCalledWith('cool-project', 'cool-project');
+    expect(setupProject).toHaveBeenCalledWith('cool-project');
   });
 
   it('should exit on cancel', async () => {
