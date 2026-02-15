@@ -1,8 +1,9 @@
 import { readFile, writeFile, readdir } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import * as p from '@clack/prompts';
+import { toCamelCase, toTitleCase } from 'remeda';
 import { TEMPLATE_REPO } from '../utils/constants.js';
-import { toCamel, toPascal, toTitle } from '../utils/case.js';
+import { toPascal } from '../utils/case.js';
 
 function isBinaryBuffer(buffer: Buffer): boolean {
   for (let i = 0; i < Math.min(buffer.length, 8000); i++) {
@@ -17,9 +18,9 @@ export async function replaceTemplateNames(dir: string, projectName: string): Pr
 
   const replacements = new Map<string, string>([
     [TEMPLATE_REPO, projectName],
-    [toCamel(TEMPLATE_REPO), toCamel(projectName)],
+    [toCamelCase(TEMPLATE_REPO), toCamelCase(projectName)],
     [toPascal(TEMPLATE_REPO), toPascal(projectName)],
-    [toTitle(TEMPLATE_REPO), toTitle(projectName)],
+    [toTitleCase(TEMPLATE_REPO), toTitleCase(projectName)],
   ]);
 
   const allFiles = await readdir(dir, { recursive: true, withFileTypes: true });
