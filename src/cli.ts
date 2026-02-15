@@ -5,6 +5,7 @@ import { intro, text, isCancel, outro, log } from '@clack/prompts';
 import { ensureGitHubAuth } from './auth/github.js';
 import { ensureGhCli, cloneTemplate, selectVersion } from './scaffold/clone.js';
 import { replaceTemplateNames } from './scaffold/template.js';
+import { setupProject } from './scaffold/setup.js';
 
 const pkgUrl = new URL('../package.json', import.meta.url);
 const pkg = JSON.parse(readFileSync(pkgUrl, 'utf8')) as { version?: string };
@@ -58,6 +59,8 @@ const main = defineCommand({
       log.error(error instanceof Error ? error.message : 'Scaffolding failed.');
       process.exit(1);
     }
+
+    await setupProject(projectName);
 
     outro(`Project ${projectName} is ready!`);
   },
