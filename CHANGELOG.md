@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.3](https://github.com/stormreply/create-innovator/compare/0.3.2...0.3.3) (2026-02-15)
+
+### Bug Fixes
+
+* persist app token credentials in release workflow ([cf93b8d](https://github.com/stormreply/create-innovator/commit/cf93b8d233a86c61aa0c44fb8c8a626d922d7d73))
+
 ## [0.3.2](https://github.com/stormreply/create-innovator/compare/0.3.1...0.3.2) (2026-02-15)
 
 ### Bug Fixes
