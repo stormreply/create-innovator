@@ -40,6 +40,10 @@ vi.mock('./scaffold/template.js', () => ({
   replaceTemplateNames: vi.fn().mockResolvedValue(undefined),
 }));
 
+vi.mock('./scaffold/setup.js', () => ({
+  setupProject: vi.fn().mockResolvedValue(undefined),
+}));
+
 describe('cli', () => {
   beforeEach(async () => {
     vi.resetModules();
@@ -111,6 +115,13 @@ describe('cli', () => {
       placeholder: 'my-innovator-app',
     });
     expect(outro).toHaveBeenCalledWith('Project my-innovator-app is ready!');
+  });
+
+  it('should call setupProject with project name after template replacement', async () => {
+    const { setupProject } = await import('./scaffold/setup.js');
+    (setupProject as Mock).mockClear();
+    await capturedCommand.run({ args: { name: 'cool-project' } });
+    expect(setupProject).toHaveBeenCalledWith('cool-project');
   });
 
   it('should exit on cancel', async () => {
