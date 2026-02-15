@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/stormreply/create-innovator/compare/0.2.0...0.3.0) (2026-02-15)
+
+### Features
+
+* add template version selection with experimental flag ([536cf4d](https://github.com/stormreply/create-innovator/commit/536cf4d6592fe59ff33b7aaec52cfdd8cf58bccd))
+* replace manifest-based placeholders with automatic name replacement ([6f87b15](https://github.com/stormreply/create-innovator/commit/6f87b15a65cc77fb7ded95edf055cbaeb0ac1c02)), closes [#4](https://github.com/stormreply/create-innovator/issues/4)
+* scaffold template repository with placeholder replacement ([0b6b92f](https://github.com/stormreply/create-innovator/commit/0b6b92f28db68154ae4c1b10f4eb4826b16c0497))
+
 ## [0.2.0](https://github.com/stormreply/create-innovator/compare/0.1.2...0.2.0) (2026-02-09)
 
 ### Features
