@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/stormreply/create-innovator/compare/0.3.3...0.4.0) (2026-02-15)
+
+### Features
+
+* automate post-clone project setup ([b071b91](https://github.com/stormreply/create-innovator/commit/b071b9189d674b0d504893df70ec973d9ee422b4)), closes [#9](https://github.com/stormreply/create-innovator/issues/9)
+* clean up template files and create initial commit after scaffolding ([836d2ee](https://github.com/stormreply/create-innovator/commit/836d2ee535281451c156905d930d827827c267e7)), closes [#11](https://github.com/stormreply/create-innovator/issues/11)
+
 ## [0.3.3](https://github.com/stormreply/create-innovator/compare/0.3.2...0.3.3) (2026-02-15)
 
 ### Bug Fixes
