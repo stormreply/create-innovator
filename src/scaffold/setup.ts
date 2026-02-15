@@ -27,15 +27,16 @@ export async function setupProject(projectName: string): Promise<void> {
 
     s.start('Creating initial commit');
     await execFile('git', ['add', '.'], { cwd: projectName });
-    await execFile('git', ['commit', '--no-verify', '-m', `feat(${projectName}): initial commit`], {
+    await execFile('git', ['commit', '-m', `feat(${projectName}): initial commit`], {
       cwd: projectName,
+      env: { ...process.env, HUSKY: '0' },
     });
     s.stop('Initial commit created');
   } catch {
     s.stop('Setup incomplete');
     p.log.warn('Automatic setup failed. Run these commands manually:');
     p.log.info(
-      `  cd ${projectName}\n  corepack enable\n  pnpm install\n  pnpm test -u\n  git add . && git commit --no-verify -m "feat(${projectName}): initial commit"`,
+      `  cd ${projectName}\n  corepack enable\n  pnpm install\n  pnpm test -u\n  git add . && HUSKY=0 git commit -m "feat(${projectName}): initial commit"`,
     );
   }
 }

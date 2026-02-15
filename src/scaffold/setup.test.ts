@@ -41,11 +41,10 @@ describe('setupProject', () => {
     expect(mockExecFile).toHaveBeenCalledWith('pnpm', ['install'], { cwd: 'my-project' });
     expect(mockExecFile).toHaveBeenCalledWith('pnpm', ['test', '-u'], { cwd: 'my-project' });
     expect(mockExecFile).toHaveBeenCalledWith('git', ['add', '.'], { cwd: 'my-project' });
-    expect(mockExecFile).toHaveBeenCalledWith(
-      'git',
-      ['commit', '--no-verify', '-m', 'feat(my-project): initial commit'],
-      { cwd: 'my-project' },
-    );
+    expect(mockExecFile).toHaveBeenCalledWith('git', ['commit', '-m', 'feat(my-project): initial commit'], {
+      cwd: 'my-project',
+      env: expect.objectContaining({ HUSKY: '0' }),
+    });
   });
 
   it('should run corepack enable when pnpm is not available', async () => {
