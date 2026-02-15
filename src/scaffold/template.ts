@@ -1,58 +1,8 @@
-import { readFile, writeFile, readdir, rm } from 'node:fs/promises';
+import { readFile, writeFile, readdir } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import * as p from '@clack/prompts';
-
-export interface Placeholder {
-  key: string;
-  prompt: string;
-  transform?: string;
-}
-
-export interface TemplateConfig {
-  placeholders: Placeholder[];
-  files: string[];
-  exclude: string[];
-}
-
-export async function readManifest(dir: string): Promise<TemplateConfig> {
-  const configPath = join(dir, 'template.config.json');
-  const raw = await readFile(configPath, 'utf8');
-  return JSON.parse(raw) as TemplateConfig;
-}
-
-export async function collectValues(
-  placeholders: Placeholder[],
-  defaults: Record<string, string> = {},
-): Promise<Record<string, string>> {
-  const values: Record<string, string> = {};
-
-  for (const ph of placeholders) {
-    if (defaults[ph.key] !== undefined) {
-      values[ph.key] = defaults[ph.key];
-      continue;
-    }
-
-    const value = await p.text({
-      message: ph.prompt,
-      placeholder: ph.key,
-    });
-
-    if (p.isCancel(value) || !value) {
-      throw new Error(`Value for "${ph.key}" is required. Aborting.`);
-    }
-
-    values[ph.key] = value;
-  }
-
-  return values;
-}
-
-function matchesPattern(filePath: string, pattern: string): boolean {
-  if (pattern.startsWith('*')) {
-    return filePath.endsWith(pattern.slice(1));
-  }
-  return filePath.includes(pattern);
-}
+import { TEMPLATE_REPO } from '../utils/constants.js';
+import { toCamel, toPascal, toTitle } from '../utils/case.js';
 
 function isBinaryBuffer(buffer: Buffer): boolean {
   for (let i = 0; i < Math.min(buffer.length, 8000); i++) {
@@ -61,26 +11,23 @@ function isBinaryBuffer(buffer: Buffer): boolean {
   return false;
 }
 
-export async function applyReplacements(
-  dir: string,
-  config: TemplateConfig,
-  values: Record<string, string>,
-): Promise<void> {
+export async function replaceTemplateNames(dir: string, projectName: string): Promise<void> {
   const s = p.spinner();
-  s.start('Replacing placeholders');
+  s.start('Replacing template names');
+
+  const replacements = new Map<string, string>([
+    [TEMPLATE_REPO, projectName],
+    [toCamel(TEMPLATE_REPO), toCamel(projectName)],
+    [toPascal(TEMPLATE_REPO), toPascal(projectName)],
+    [toTitle(TEMPLATE_REPO), toTitle(projectName)],
+  ]);
 
   const allFiles = await readdir(dir, { recursive: true, withFileTypes: true });
   const files = allFiles.filter((f) => f.isFile()).map((f) => relative(dir, join(f.parentPath, f.name)));
 
-  const matchingFiles = files.filter((f) => {
-    const excluded = config.exclude.some((pattern) => matchesPattern(f, pattern));
-    if (excluded) return false;
-    return config.files.some((pattern) => matchesPattern(f, pattern));
-  });
-
   let replacedCount = 0;
 
-  for (const file of matchingFiles) {
+  for (const file of files) {
     const filePath = join(dir, file);
     const buffer = await readFile(filePath);
 
@@ -89,10 +36,9 @@ export async function applyReplacements(
     let content = buffer.toString('utf8');
     let changed = false;
 
-    for (const [key, value] of Object.entries(values)) {
-      const placeholder = `{{${key}}}`;
-      if (content.includes(placeholder)) {
-        content = content.replaceAll(placeholder, value);
+    for (const [from, to] of replacements) {
+      if (content.includes(from)) {
+        content = content.replaceAll(from, to);
         changed = true;
       }
     }
@@ -103,7 +49,5 @@ export async function applyReplacements(
     }
   }
 
-  s.stop(`Replaced placeholders in ${replacedCount} file(s)`);
-
-  await rm(join(dir, 'template.config.json'), { force: true });
+  s.stop(`Replaced template names in ${replacedCount} file(s)`);
 }
