@@ -69,7 +69,7 @@ describe('template', () => {
       expect(vol.readFileSync('/project/src/utils.ts', 'utf8')).toBe(original);
     });
 
-    it('should handle single-word project names', async () => {
+    it('should handle single-word project names (kebab-case)', async () => {
       vol.fromJSON({
         '/project/package.json': '{ "name": "innovator-template" }',
         '/project/README.md': '# Innovator Template',
@@ -80,6 +80,51 @@ describe('template', () => {
 
       expect(vol.readFileSync('/project/package.json', 'utf8')).toBe('{ "name": "dashboard" }');
       expect(vol.readFileSync('/project/README.md', 'utf8')).toBe('# Dashboard');
+    });
+  });
+
+  describe('removeTemplateFiles', () => {
+    it('should remove changelog.md, claude.md, and readme.md', async () => {
+      vol.fromJSON({
+        '/project/changelog.md': '# Changelog',
+        '/project/claude.md': '# Claude',
+        '/project/readme.md': '# Readme',
+        '/project/package.json': '{}',
+        '/project/src/index.ts': 'export default {}',
+      });
+
+      const { removeTemplateFiles } = await import('./template.js');
+      await removeTemplateFiles('/project');
+
+      expect(vol.existsSync('/project/changelog.md')).toBe(false);
+      expect(vol.existsSync('/project/claude.md')).toBe(false);
+      expect(vol.existsSync('/project/readme.md')).toBe(false);
+      expect(vol.existsSync('/project/package.json')).toBe(true);
+      expect(vol.existsSync('/project/src/index.ts')).toBe(true);
+    });
+
+    it('should handle case-insensitive file names', async () => {
+      vol.fromJSON({
+        '/project/CHANGELOG.md': '# Changelog',
+        '/project/CLAUDE.md': '# Claude',
+        '/project/README.md': '# Readme',
+      });
+
+      const { removeTemplateFiles } = await import('./template.js');
+      await removeTemplateFiles('/project');
+
+      expect(vol.existsSync('/project/CHANGELOG.md')).toBe(false);
+      expect(vol.existsSync('/project/CLAUDE.md')).toBe(false);
+      expect(vol.existsSync('/project/README.md')).toBe(false);
+    });
+
+    it('should not fail when no template files exist', async () => {
+      vol.fromJSON({
+        '/project/package.json': '{}',
+      });
+
+      const { removeTemplateFiles } = await import('./template.js');
+      await expect(removeTemplateFiles('/project')).resolves.not.toThrow();
     });
   });
 });

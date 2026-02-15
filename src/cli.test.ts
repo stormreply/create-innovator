@@ -38,6 +38,7 @@ vi.mock('./scaffold/clone.js', () => ({
 
 vi.mock('./scaffold/template.js', () => ({
   replaceTemplateNames: vi.fn().mockResolvedValue(undefined),
+  removeTemplateFiles: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('./scaffold/setup.js', () => ({
@@ -121,7 +122,7 @@ describe('cli', () => {
     const { setupProject } = await import('./scaffold/setup.js');
     (setupProject as Mock).mockClear();
     await capturedCommand.run({ args: { name: 'cool-project' } });
-    expect(setupProject).toHaveBeenCalledWith('cool-project');
+    expect(setupProject).toHaveBeenCalledWith('cool-project', 'cool-project');
   });
 
   it('should exit on cancel', async () => {
