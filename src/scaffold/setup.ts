@@ -4,7 +4,7 @@ import * as p from '@clack/prompts';
 
 const execFile = promisify(execFileCb);
 
-export async function setupProject(projectDir: string): Promise<void> {
+export async function setupProject(projectDir: string, projectName: string): Promise<void> {
   const s = p.spinner();
 
   try {
@@ -24,9 +24,18 @@ export async function setupProject(projectDir: string): Promise<void> {
     s.start('Updating test snapshots');
     await execFile('pnpm', ['test', '-u'], { cwd: projectDir });
     s.stop('Test snapshots updated');
+
+    s.start('Creating initial commit');
+    await execFile('git', ['add', '.'], { cwd: projectDir });
+    await execFile('git', ['commit', '--no-verify', '-m', `feat(${projectName}): initial commit`], {
+      cwd: projectDir,
+    });
+    s.stop('Initial commit created');
   } catch {
     s.stop('Setup incomplete');
     p.log.warn('Automatic setup failed. Run these commands manually:');
-    p.log.info(`  cd ${projectDir}\n  corepack enable\n  pnpm install\n  pnpm test -u`);
+    p.log.info(
+      `  cd ${projectDir}\n  corepack enable\n  pnpm install\n  pnpm test -u\n  git add . && git commit --no-verify -m "feat(${projectName}): initial commit"`,
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { readFile, writeFile, readdir } from 'node:fs/promises';
+import { readFile, writeFile, readdir, rm } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import * as p from '@clack/prompts';
 import { toCamelCase, toTitleCase } from 'remeda';
@@ -51,4 +51,20 @@ export async function replaceTemplateNames(dir: string, projectName: string): Pr
   }
 
   s.stop(`Replaced template names in ${replacedCount} file(s)`);
+}
+
+const TEMPLATE_FILES_TO_REMOVE = ['changelog.md', 'claude.md', 'readme.md'];
+
+export async function removeTemplateFiles(dir: string): Promise<void> {
+  const s = p.spinner();
+  s.start('Removing template files');
+
+  const allFiles = await readdir(dir);
+  const filesToRemove = allFiles.filter((f) => TEMPLATE_FILES_TO_REMOVE.includes(f.toLowerCase()));
+
+  for (const file of filesToRemove) {
+    await rm(join(dir, file));
+  }
+
+  s.stop(`Removed ${filesToRemove.length} template file(s)`);
 }

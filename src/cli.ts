@@ -4,7 +4,7 @@ import logo from 'cli-ascii-logo';
 import { intro, text, isCancel, outro, log } from '@clack/prompts';
 import { ensureGitHubAuth } from './auth/github.js';
 import { ensureGhCli, cloneTemplate, selectVersion } from './scaffold/clone.js';
-import { replaceTemplateNames } from './scaffold/template.js';
+import { replaceTemplateNames, removeTemplateFiles } from './scaffold/template.js';
 import { setupProject } from './scaffold/setup.js';
 
 const pkgUrl = new URL('../package.json', import.meta.url);
@@ -55,12 +55,13 @@ const main = defineCommand({
       const tag = await selectVersion(token, args.experimental);
       await cloneTemplate(projectName, tag);
       await replaceTemplateNames(projectName, projectName);
+      await removeTemplateFiles(projectName);
     } catch (error) {
       log.error(error instanceof Error ? error.message : 'Scaffolding failed.');
       process.exit(1);
     }
 
-    await setupProject(projectName);
+    await setupProject(projectName, projectName);
 
     outro(`Project ${projectName} is ready!`);
   },
