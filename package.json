@@ -37,7 +37,8 @@
     "@clack/prompts": "1.0.0",
     "@octokit/rest": "^22.0.1",
     "citty": "0.2.0",
-    "cli-ascii-logo": "^2.1.0"
+    "cli-ascii-logo": "^2.1.0",
+    "remeda": "^2.33.6"
   },
   "devDependencies": {
     "@commitlint/cli": "20.4.1",

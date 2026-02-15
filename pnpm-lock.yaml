@@ -20,6 +20,9 @@ importers:
       cli-ascii-logo:
         specifier: ^2.1.0
         version: 2.1.0
+      remeda:
+        specifier: ^2.33.6
+        version: 2.33.6
     devDependencies:
       '@commitlint/cli':
         specifier: 20.4.1
@@ -2510,6 +2513,9 @@ packages:
     resolution: {integrity: sha512-BwaJwQYUIIAKuDYvpqQTSoy0U7zIy6cHyEjih/aNaFICphGahia4cjDANuFXb7gVZ51hIK9W0io6fjNQWXqICg==}
     engines: {node: ^20.12.0 || >=22.0.0}
     hasBin: true
+
+  remeda@2.33.6:
+    resolution: {integrity: sha512-tazDGH7s75kUPGBKLvhgBEHMgW+TdDFhjUAMdQj57IoWz6HsGa5D2RX5yDUz6IIqiRRvZiaEHzCzWdTeixc/Kg==}
 
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
@@ -5523,6 +5529,8 @@ snapshots:
       - '@types/node'
       - magicast
       - supports-color
+
+  remeda@2.33.6: {}
 
   require-directory@2.1.1: {}
 
