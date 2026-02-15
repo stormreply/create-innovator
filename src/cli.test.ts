@@ -37,9 +37,7 @@ vi.mock('./scaffold/clone.js', () => ({
 }));
 
 vi.mock('./scaffold/template.js', () => ({
-  readManifest: vi.fn().mockResolvedValue({ placeholders: [], files: [], exclude: [] }),
-  collectValues: vi.fn().mockResolvedValue({}),
-  applyReplacements: vi.fn().mockResolvedValue(undefined),
+  replaceTemplateNames: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('cli', () => {
