@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.1](https://github.com/stormreply/create-innovator/compare/0.4.0...0.4.1) (2026-02-15)
+
+### Bug Fixes
+
+* disable Husky via env variable during initial commit ([d1714a1](https://github.com/stormreply/create-innovator/commit/d1714a11293ca2e814cb01ecd75da0373e1ea78e)), closes [#13](https://github.com/stormreply/create-innovator/issues/13)
+
 ## [0.4.0](https://github.com/stormreply/create-innovator/compare/0.3.3...0.4.0) (2026-02-15)
 
 ### Features
