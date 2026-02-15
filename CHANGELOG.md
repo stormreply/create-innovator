@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.2](https://github.com/stormreply/create-innovator/compare/0.3.1...0.3.2) (2026-02-15)
+
+### Bug Fixes
+
+* use app token for release step ([2bcadec](https://github.com/stormreply/create-innovator/commit/2bcadec50c998da9c73d16425c21a863fc79e95e))
+
 ## [0.3.1](https://github.com/stormreply/create-innovator/compare/0.3.0...0.3.1) (2026-02-15)
 
 ## [0.3.0](https://github.com/stormreply/create-innovator/compare/0.2.0...0.3.0) (2026-02-15)
