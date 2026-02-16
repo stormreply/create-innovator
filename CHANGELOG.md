@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0](https://github.com/stormreply/create-innovator/compare/0.4.1...1.0.0) (2026-02-16)
+
+### ⚠ BREAKING CHANGES
+
+* README has been completely rewritten.
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+
+### Documentation
+
+* rewrite README with usage and development guides ([2119cee](https://github.com/stormreply/create-innovator/commit/2119cee919d6c42bfab654be6b8f26170d501bad))
+
 ## [0.4.1](https://github.com/stormreply/create-innovator/compare/0.4.0...0.4.1) (2026-02-15)
 
 ### Bug Fixes
