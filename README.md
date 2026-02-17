@@ -30,6 +30,7 @@ npx create-innovator
 | Flag             | Alias | Description                                                 |
 | ---------------- | ----- | ----------------------------------------------------------- |
 | `--name <name>`  | `-n`  | Project name (skips the interactive prompt)                 |
+| `--latest`       | `-l`  | Skip version selection and use the latest version           |
 | `--experimental` | `-e`  | Include pre-release template versions in the version picker |
 
 ### Examples
@@ -46,6 +47,12 @@ Create a project with a specific name:
 pnpm create innovator --name my-project
 ```
 
+Use the latest template version without prompting:
+
+```bash
+pnpm create innovator --latest
+```
+
 Include experimental template versions:
 
 ```bash
@@ -55,7 +62,7 @@ pnpm create innovator --experimental
 ### What happens when you run it
 
 1. **GitHub authentication** — reads your token from `~/.npmrc` or prompts you to enter one. Validates required scopes (`repo`, `read:packages`) and access to the `stormreply` organization.
-2. **Version selection** — fetches available template tags and lets you pick a version.
+2. **Version selection** — fetches available template tags and lets you pick a version (or auto-selects the latest when `--latest` is used).
 3. **Clone** — shallow-clones the template at the selected tag using `gh repo clone`, then re-initializes a fresh git repository.
 4. **Name replacement** — replaces `innovator-template` throughout the project with your chosen name in all case variants (kebab-case, camelCase, PascalCase, Title Case).
 5. **Template cleanup** — removes template-specific files that are not needed in the new project.

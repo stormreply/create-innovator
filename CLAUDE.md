@@ -33,7 +33,7 @@ Entry point: `src/cli.ts` — uses `citty` for arg parsing and `@clack/prompts` 
 **CLI flow** (sequential):
 
 1. `ensureGitHubAuth()` — reads/prompts for GitHub PAT, validates scopes + org access, saves to `~/.npmrc`
-2. `ensureGhCli()` → `selectVersion()` → `cloneTemplate()` — requires `gh` CLI, fetches tags via Octokit, shallow-clones at selected tag, re-inits git
+2. `ensureGhCli()` → `selectVersion()` / `selectLatestVersion()` → `cloneTemplate()` — requires `gh` CLI, fetches tags via Octokit, lets user pick a version (or auto-selects latest with `--latest`), shallow-clones at selected tag, re-inits git
 3. `replaceTemplateNames()` — replaces `innovator-template` in all text files with the project name (kebab-case, camelCase, PascalCase, Title Case variants)
 4. `setupProject()` — installs deps via pnpm and updates test snapshots; **never throws** (failures show manual instructions instead)
 
