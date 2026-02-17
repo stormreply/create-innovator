@@ -121,6 +121,30 @@ describe('clone', () => {
     });
   });
 
+  describe('selectLatestVersion', () => {
+    it('should throw when no release tags exist', async () => {
+      mockPaginateIterator.mockReturnValue(
+        (async function* () {
+          yield { data: [] };
+        })(),
+      );
+      const { selectLatestVersion } = await import('./clone.js');
+      await expect(selectLatestVersion('ghp_test')).rejects.toThrow('No release tags found');
+    });
+
+    it('should return the first tag without prompting', async () => {
+      mockPaginateIterator.mockReturnValue(
+        (async function* () {
+          yield { data: [{ name: 'release-v2.0.0' }, { name: 'release-v1.0.0' }] };
+        })(),
+      );
+      const { selectLatestVersion } = await import('./clone.js');
+      const result = await selectLatestVersion('ghp_test');
+      expect(result).toBe('release-v2.0.0');
+      expect(mockSelect).not.toHaveBeenCalled();
+    });
+  });
+
   describe('cloneTemplate', () => {
     it('should throw when directory already exists', async () => {
       mockAccess.mockResolvedValue(undefined);
