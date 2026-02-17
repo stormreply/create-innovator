@@ -3,7 +3,7 @@ import { defineCommand, runMain } from 'citty';
 import logo from 'cli-ascii-logo';
 import { intro, text, isCancel, outro, log } from '@clack/prompts';
 import { ensureGitHubAuth } from './auth/github.js';
-import { ensureGhCli, cloneTemplate, selectVersion } from './scaffold/clone.js';
+import { ensureGhCli, cloneTemplate, selectVersion, selectLatestVersion } from './scaffold/clone.js';
 import { replaceTemplateNames, removeTemplateFiles } from './scaffold/template.js';
 import { setupProject } from './scaffold/setup.js';
 
@@ -23,6 +23,13 @@ const main = defineCommand({
       description: 'Project name',
       required: false,
       type: 'string',
+    },
+    latest: {
+      alias: ['l'],
+      description: 'Skip version selection and use the latest version',
+      required: false,
+      type: 'boolean',
+      default: false,
     },
     experimental: {
       alias: ['e'],
@@ -52,7 +59,9 @@ const main = defineCommand({
     try {
       const token = await ensureGitHubAuth();
       await ensureGhCli();
-      const tag = await selectVersion(token, args.experimental);
+      const tag = args.latest
+        ? await selectLatestVersion(token, args.experimental)
+        : await selectVersion(token, args.experimental);
       await cloneTemplate(projectName, tag);
       await replaceTemplateNames(projectName, projectName);
       await removeTemplateFiles(projectName);

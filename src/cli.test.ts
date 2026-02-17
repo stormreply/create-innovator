@@ -33,6 +33,7 @@ vi.mock('./auth/github.js', () => ({
 vi.mock('./scaffold/clone.js', () => ({
   ensureGhCli: vi.fn().mockResolvedValue(undefined),
   selectVersion: vi.fn().mockResolvedValue('release-v1.0.0'),
+  selectLatestVersion: vi.fn().mockResolvedValue('release-v2.0.0'),
   cloneTemplate: vi.fn().mockResolvedValue(undefined),
 }));
 
@@ -70,13 +71,20 @@ describe('cli', () => {
     expect(capturedCommand.meta.version).toBe('1.2.3');
   });
 
-  it('should define name and experimental arguments', () => {
+  it('should define name, latest, and experimental arguments', () => {
     expect(capturedCommand.args).toEqual({
       name: {
         alias: ['n'],
         description: 'Project name',
         required: false,
         type: 'string',
+      },
+      latest: {
+        alias: ['l'],
+        description: 'Skip version selection and use the latest version',
+        required: false,
+        type: 'boolean',
+        default: false,
       },
       experimental: {
         alias: ['e'],
@@ -123,6 +131,24 @@ describe('cli', () => {
     (setupProject as Mock).mockClear();
     await capturedCommand.run({ args: { name: 'cool-project' } });
     expect(setupProject).toHaveBeenCalledWith('cool-project');
+  });
+
+  it('should use selectLatestVersion when --latest flag is set', async () => {
+    const { selectVersion, selectLatestVersion } = await import('./scaffold/clone.js');
+    (selectVersion as Mock).mockClear();
+    (selectLatestVersion as Mock).mockClear();
+    await capturedCommand.run({ args: { name: 'test', latest: true } });
+    expect(selectLatestVersion).toHaveBeenCalled();
+    expect(selectVersion).not.toHaveBeenCalled();
+  });
+
+  it('should use selectVersion when --latest flag is not set', async () => {
+    const { selectVersion, selectLatestVersion } = await import('./scaffold/clone.js');
+    (selectVersion as Mock).mockClear();
+    (selectLatestVersion as Mock).mockClear();
+    await capturedCommand.run({ args: { name: 'test' } });
+    expect(selectVersion).toHaveBeenCalled();
+    expect(selectLatestVersion).not.toHaveBeenCalled();
   });
 
   it('should exit on cancel', async () => {

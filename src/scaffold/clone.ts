@@ -41,6 +41,20 @@ export async function fetchReleaseTags(token: string, includeExperimental = fals
   return tags;
 }
 
+export async function selectLatestVersion(token: string, includeExperimental = false): Promise<string> {
+  const s = p.spinner();
+  s.start('Fetching latest template version');
+  const tags = await fetchReleaseTags(token, includeExperimental);
+
+  if (tags.length === 0) {
+    s.stop('No versions found');
+    throw new Error(`No release tags found in ${GITHUB_ORG}/${TEMPLATE_REPO}.`);
+  }
+
+  s.stop(`Using latest version: ${tags[0]}`);
+  return tags[0];
+}
+
 export async function selectVersion(token: string, includeExperimental = false): Promise<string> {
   const s = p.spinner();
   s.start('Fetching available template versions');
