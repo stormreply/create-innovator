@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0](https://github.com/stormreply/create-innovator/compare/1.0.0...1.1.0) (2026-02-17)
+
+### Features
+
+* add --latest / -l flag to skip version selection ([6cc1c1f](https://github.com/stormreply/create-innovator/commit/6cc1c1f0932d85e10c12f1ed4523a69cc13a2047))
+
 ## [1.0.0](https://github.com/stormreply/create-innovator/compare/0.4.1...1.0.0) (2026-02-16)
 
 ### ⚠ BREAKING CHANGES
